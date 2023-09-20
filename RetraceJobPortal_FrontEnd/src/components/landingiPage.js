@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export function  LandingPage(){
 
@@ -13,27 +14,85 @@ export function  LandingPage(){
 
       const handleApplyClick =()=>{
         setShowJobApplicationForm(true)
-      }
+      };
+
+      //pagination 
+      const [currentPage,setCurrentPage]=useState(1);
+      const [totalPages,setTotalPages] = useState(1);
+      
     
       useEffect(() => {
-        fetch('http://localhost:8000/jobs/userLandingPage')
+        fetch(`http://localhost:8000/jobs/userLandingPage?page=${currentPage}`)
           .then((response) => response.json())
-          .then((data) => setJobs(data))
+          .then((data) => {
+            setJobs(data.result);
+            setTotalPages(data.totalPages);
+      })
           .catch((error) => console.error('Error fetching data: ' + error));
-      }, []);
+      }, [currentPage]);
+
+      //handling the previous and next page 
+      const handlePreviousPage = ()=>{
+        if(currentPage > 1){
+          setCurrentPage(currentPage - 1);
+        }
+      };
+
+      const handleNextPage = ()=>{
+        if(currentPage < totalPages){
+          setCurrentPage(currentPage + 1);
+        }
+      };
+
+      //for verifying the logged in user is aurthorzed or not
+      const [auth,setAuth]=useState(false);
+      const [message,setMessage]=useState('');
+      const [name,setName]=useState('');
+    
+      axios.defaults.withCredentials=true; //from login page
+    //to get the employer name  and id decoded from the cookies
+      useEffect(()=>{
+        axios.get('http://localhost:8000/').then(res=>{
+          if(res.data.status==="success"){
+            setAuth(true);
+            setName(res.data.name)
+          }else{
+            setAuth(false);
+            setMessage(res.data.error)
+          }
+        })
+        .then(err=>console.log(err));
+      },[])
+    
      
+      //for user logout 
+      const handleDelete = ()=>{
+        axios.get('http://localhost:8000/Logout').then(res=>{
+         window.location.reload(true);
+      }).catch(err=>console.log(err));
+        }
+
+        
+    
       
       return (
+        <div>
+        { auth ? 
+    
         <div>
             {showJobApplicationForm ?(
                 <JobApplicationForm />
             ):(
                 <>
           <h1>RETRACE</h1>
+          <h2>WELCOME-- {name}</h2>
+          <button className="btn btn-danger" onClick={handleDelete}>Logout</button>
+
           <div className=" container-fluid alert alert-danger p-2 ">
             <input type="text" className="m-2 text-center"/>
             <button>search</button>
           </div>
+          <div >
           {jobs.map((job) => (
             <div key={job.id} className="container p-3 ">
                 <div className="alert alert-primary p-3">
@@ -45,9 +104,23 @@ export function  LandingPage(){
             </div>
             </div>
           ))}
+           <div className="pagination">
+      <button onClick={handlePreviousPage} disabled={currentPage === 1}> Previous Page</button>
+      <span>Page {currentPage} of {totalPages}</span>
+      <button onClick={handleNextPage} disabled={currentPage === totalPages}> Next Page </button>
+   </div>
+   </div>
           </>
           )}
         </div>
+       :
+       <div>
+   <h3>{message}</h3>
+    <h3>Login Now</h3>
+    <Link to ='/user_login' className='btn btn-primary'>Login</Link>
+        </div>
+      }
+      </div>
       );
     }
 

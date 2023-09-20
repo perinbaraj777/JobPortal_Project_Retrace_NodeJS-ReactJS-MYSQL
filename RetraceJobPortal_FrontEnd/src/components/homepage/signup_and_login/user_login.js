@@ -16,6 +16,9 @@ export function Userlogin(){
    //to navigate to the landing page "hint:cannot declare the usenavigate component inside a function"
    const navigate= useNavigate();
 
+   //for allowing cookies and accessing it
+   axios.defaults.withCredentials=true;
+
    const handleSubmit = async (e) => {
     e.preventDefault();
     try {

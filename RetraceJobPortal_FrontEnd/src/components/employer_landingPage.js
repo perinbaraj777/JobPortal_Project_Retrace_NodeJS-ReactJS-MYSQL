@@ -33,7 +33,7 @@ const [auth,setAuth]=useState(false);
 
   //for logout a employer when deleted the cookie also should be deleted  and redirect to the login page
   const handleDelete = ()=>{
-    axios.get('http://localhost:8000/employerLogout').then(res=>{
+    axios.get('http://localhost:8000/Logout').then(res=>{
      window.location.reload(true);
   }).catch(err=>console.log(err));
     }

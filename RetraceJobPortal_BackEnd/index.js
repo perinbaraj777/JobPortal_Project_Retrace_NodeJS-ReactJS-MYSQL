@@ -121,6 +121,11 @@ a.query(sql,[req.body.mailId],(err,data)=>{
             console.log(response)
             if(err) return res.json({Error:"password compare error"});
             if(response) {
+                //get two coloumn values from databse and assign to a single variabele by js string concatination method
+                const name = data[0].first_name + ' ' + data[0].last_name;
+                const token = jwt.sign({name},"jwt-seceret-key",{expiresIn:"1d"});
+                res.cookie('token',token);
+
                 return res.json({status:"success"})                
             }
             else{                
@@ -195,7 +200,7 @@ add.post("/employerLogin",(req,res)=>{
   const verifyUser=(req,res,next)=>{
     const token = req.cookies.token;
     if(!token){
-        return res.json({error:"you are not authenticated"});
+        return res.json({error:"you are not authenticated  Please login"});
             }else{
                 jwt.verify(token,"jwt-seceret-key",(err,decoded)=>{
             if(err){
@@ -213,7 +218,7 @@ add.post("/employerLogin",(req,res)=>{
          }) 
   
          //employer logout api for the logout button in the employer landing page by deleting the cookiee
-         add.get('/employerLogout',(request,response)=>{
+         add.get('/Logout',(request,response)=>{
             response.clearCookie('token');
             return response.json({status:"success"})
          })
@@ -261,16 +266,33 @@ add.get('/employer/jobs', (request, response) => {
     });
   });
 
-  //api for displaying all jobs in userLanding page
-  add.get('/jobs/userLandingPage',(request,response)=>{
-    a.query('select * from jobs',(error,result)=>{
+  //api for displaying all jobs in pagination in userLanding page
+  add.get('/jobs/userLandingPage',(req,res)=>{
+const page = parseInt(req.query.page) || 1;
+//variable storing the limit of jobs to display per page
+const itemsPerpage = 5;
+const offset = (page - 1) * itemsPerpage;
+//fetch and storing total number of jobs in a variable
+const countQuery = 'select count(*) as totalCount from jobs';
+a.query(countQuery,(countError,countResult)=>{
+    if(countError){
+        return res.status(500).json({error:"Database error"});
+
+    }
+    const totalCount = countResult[0].totalCount;
+
+    //fetching the limited data from database per page
+    const sql = 'select * from jobs limit ? offset ?';
+    a.query(sql,[itemsPerpage,offset],(error,result)=>{
         if(error){
-            console.log('Error executing query: ' +error);
-            response.status(500).json({'internal server Error':error})
-        }else{
-            response.status(200).json(result)
-        };
+            return res.status(500).json({error:"Database error"});
+
+        }
+        //calculating total number of pages
+        const totalPages = Math.ceil(totalCount / itemsPerpage);
+    res.json({result,totalPages});
     })
+})
   })
 //job application api in user landing page
   add.post('/job/ApplicationForm',(request,response)=>{
