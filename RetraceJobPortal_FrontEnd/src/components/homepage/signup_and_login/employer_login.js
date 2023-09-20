@@ -8,6 +8,7 @@ export  function Employerlogin(){
     //declaring the navigate
     const navigate =useNavigate();
 
+
     const [formData,setFormData]=useState({
         employerMail:"",
         employerPassword:""
@@ -16,19 +17,25 @@ export  function Employerlogin(){
     const handleChange= (e)=>{
         setFormData({ ...formData,[e.target.name]:e.target.value});
     }
+
+    //setting credentials -backend cors
+    axios.defaults.withCredentials=true;
+
  const handleSubmit= async (e)=>{
     e.preventDefault();
     try{
-        const response = await axios.post('http://localhost:8000/employerLogin',formData);
+        const response = await axios.post('http://localhost:8000/employerLogin',formData)
     if(response.data.status==="success"){
         alert("Login successfull")
         navigate('/employerLandingpage');
         
                
     }else{
-        alert("Login  (please verify the mailId and  password)")
+        alert(response.data.Error)
     }
     } catch(error){
+        // navigate('/employerLandingpage')
+
         alert("Login failed (please verify the mailId and  password)")
     }
  }
@@ -44,7 +51,7 @@ export  function Employerlogin(){
             <td><input type="email" id="mail" name="employerMail" value={formData.employerMail} onChange={handleChange}/></td></tr>
             <tr>
             <td><label htmlFor="password">PASSWORD:</label></td>
-            <td> <input type="text" id="password" name="employerPassword" value={formData.employerPassword} onChange={handleChange}></input></td><br/>
+            <td> <input type="text" id="password" name="employerPassword" value={formData.employerPassword} onChange={handleChange}></input></td>
             </tr>
             
             </tbody>

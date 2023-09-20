@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
-
+import { Link } from "react-router-dom";
 
 
 // Job Listing Component
@@ -10,6 +10,35 @@ const Employerfunctions = () => {
   const [showApplicationForm, setShowApplicationForm] = useState(false);
 
   const [showPostedJobs,setShowPostedJobs]=useState(false);
+
+//user authorized or not function with logout in employer landing page
+const [auth,setAuth]=useState(false);
+  const [message,setMessage]=useState('');
+  const [name,setName]=useState('');
+
+  axios.defaults.withCredentials=true; //from login page
+//to get the employer name  and id decoded from the cookies
+  useEffect(()=>{
+    axios.get('http://localhost:8000/').then(res=>{
+      if(res.data.status==="success"){
+        setAuth(true);
+        setName(res.data.name)
+      }else{
+        setAuth(false);
+        setMessage(res.data.error)
+      }
+    })
+    .then(err=>console.log(err));
+  },[])
+
+  //for logout a employer when deleted the cookie also should be deleted  and redirect to the login page
+  const handleDelete = ()=>{
+    axios.get('http://localhost:8000/employerLogout').then(res=>{
+     window.location.reload(true);
+  }).catch(err=>console.log(err));
+    }
+
+
 //function to toggle between the state of the application form to true or false by button onclick
   const handleApplyClick = () => {
     setShowApplicationForm(true);
@@ -18,18 +47,22 @@ const Employerfunctions = () => {
   const handleShowJobsClick=()=>{
     setShowPostedJobs(true);
   }
-  return (
 
-    <div>
-      
-      
+  
+  return (
+   <div>
+    {
+      auth ? 
+
+    <div>          
       {showApplicationForm ? (
         <JobApplicationForm />
       ) : (
         <>
          <h1 className="text-center bg-dark text-light">EMPLOYERS MODULE</h1>
         <div className="container alert alert-warning p-3">
-         
+         <h3> WELCOME --{name}</h3>
+         <button className="btn btn-danger" onClick={handleDelete}>Logout</button>
         <h2>post a job</h2>
         <button onClick={handleApplyClick} className="alert alert-danger">REGISTER</button>
         </div>
@@ -53,8 +86,16 @@ const Employerfunctions = () => {
       </div>
       
     </div>
+    :
+    <div>
+    <h3>{message}</h3>
+    <h3>Login Now</h3>
+    <Link to ='/employer_login' className='btn btn-primary'>Login</Link>
+    </div>
+     }
+     </div>
 
-    
+
   );
 };
 
@@ -163,6 +204,7 @@ const JobApplicationForm = () => {
 //if issubmitted ===false the job application form remains unchanged
   return (
     <>
+    
     <form onSubmit={handleSubmit}>
     <h1 className="text-center bg-dark text-light">JOB REGISTRATION FORM</h1>
         <table className="table alert alert-secondary container">

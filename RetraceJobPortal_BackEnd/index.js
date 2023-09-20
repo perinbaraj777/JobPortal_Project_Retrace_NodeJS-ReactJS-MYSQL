@@ -5,13 +5,27 @@ const fileupload = require('express-fileupload');
 const database = require('mysql');
 const nodeMailer = require('nodemailer');
 const {application,request,response}=require('express');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const bcrypt=require('bcrypt');
+
+
 const add = express();
-add.use(cors());
+add.use(cors({
+    origin:['http://localhost:3000'],
+    methods:['POST','GET'],
+    credentials:true
+}));
+
 add.use(fileupload());
 add.use(bodyparser.json());
 
 add.use(express.json());
 add.use(express.static('public'));
+add.use(cookieParser());
+ 
+const salt =10;
+
 
 //node mailer
 // var transporter = nodeMailer.createTransport({
@@ -68,10 +82,15 @@ a.connect(function(error){
 
 add.post('/userRegistration',(request,response)=>{
 console.log(JSON.stringify(request.body));
-let{userType,firstName,lastName,age,gender,dob,city,district,state,nationality,mailId,contactNumber,qualification,userPassword}=request.body;
+let{userType,firstName,lastName,age,gender,dob,city,district,state,nationality,mailId,contactNumber,qualification,}=request.body;
 
 let sql ='insert into user_signup(user_type,first_name,last_name,age,gender,dob,city,district,state,nationality,mail_id,contact_number,qualification,user_password,status,effective_from,effective_to,created_on,created_by,modified_by,modified_on) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,"A",current_date(),"9999-08-07",current_timestamp,"admin","admin",current_timestamp)'
-a.query(sql,[userType,firstName,lastName,age,gender,dob,city,district,state,nationality,mailId,contactNumber,qualification,userPassword],(error,result)=>{
+bcrypt.hash(request.body.userPassword.toString(),salt,(error,hash)=>{
+    if(error){
+        return response.json({error:"error for hashing password"});
+    }
+
+a.query(sql,[userType,firstName,lastName,age,gender,dob,city,district,state,nationality,mailId,contactNumber,qualification,hash],(error,result)=>{
     if(error){
         let s={"status":"error"};
         console.log(error);
@@ -87,34 +106,47 @@ a.query(sql,[userType,firstName,lastName,age,gender,dob,city,district,state,nati
     
     
 })
+})
 });
 
-//user login api
-add.post("/userLogin",(request,response)=>{
-    let {mailId,userPassword}=request.body;
-    const sql = 'select * from user_signup where mail_id = ? and user_password = ?';
-    a.query(sql, [mailId, userPassword], (error, result) => {
-      if (error){
-        console.log('Error during login:', error);
-        response.status(500).json({ status: 'failed', message: 'Login failed' });
-      } else {
-        if (result.length >= 1) {
-            response.status(200).json({ status: 'success', message: 'Login successful' });
-        } else {
-            response.status(401).json({ status: 'failed', message: 'Login failed' });
-        }
-      }
-    });
+
+
+//user login api with password decrypt
+add.post("/userLogin",(req,res)=>{
+const sql = 'select * from  user_signup where mail_id = ?';
+a.query(sql,[req.body.mailId],(err,data)=>{
+    if(err) return res.json({Error:"Login error in server"});
+    if(data.length > 0) {
+        bcrypt.compare(req.body.userPassword.toString(), data[0].user_password,(err,response)=>{
+            console.log(response)
+            if(err) return res.json({Error:"password compare error"});
+            if(response) {
+                return res.json({status:"success"})                
+            }
+            else{                
+                return res.json({Error:"password not matched"})
+            }
+        })
+            }else{
+                return res.json({Error:"no email existed"})
+            }
 })
+});
+
 
 
 
 //api for employeer registration
 add.post('/employeerRegistration',(request,response)=>{
 console.log(JSON.stringify(request.body))
-    let {companyName,recruiterName,employerMail,employerPhone,employerPassword}=request.body;
+    let {companyName,recruiterName,employerMail,employerPhone}=request.body;
     const sql='insert into employer_signup(company_name,empoyer_name,employer_mail,contact_number,employer_password,status,created_by,created_on,modified_by,modified_on,effective_from,effective_to)values(?,?,?,?,?,"A","admin",current_date(),"admin",current_timestamp,current_timestamp,"9999-02-12")';
-a.query(sql,[companyName,recruiterName,employerMail,employerPhone,employerPassword],(error,result)=>{
+    bcrypt.hash(request.body.employerPassword.toString(),salt,(error,hash)=>{
+        if(error){
+            return response.json({error:"error for hashing password"});
+        }
+    
+    a.query(sql,[companyName,recruiterName,employerMail,employerPhone,hash],(error,result)=>{
     if(error){
         console.log(error);
         response.send({"status":"failed"})
@@ -122,30 +154,70 @@ a.query(sql,[companyName,recruiterName,employerMail,employerPhone,employerPasswo
         response.send({"status":"success"})
     }
 })
+    })
 })
 
-//api for employer login
-add.post('/employerLogin',(request,response)=>{
-    let {employerMail,employerPassword}=request.body;
-    let sql='select * from employer_signup where employer_mail=? and employer_password=?';
-    a.query(sql,[employerMail,employerPassword],(error,result)=>{
-       
-        //variable for getting the values in the employer table
-        const employerData=result[0];
 
-        if(error){
-            response.send({"status":"failed"})
-        }else{
-            if(result.length>1){
-                response.status(200).json({status:"success",  message: 'Login successful',employerId:employerData.employer_id})
-                
 
-            }else{
-                response.send({"status":"failed" , message: 'Login failed'})
-            }
-        }
+//employer login api with  password decrypt() actual)
+add.post("/employerLogin",(req,res)=>{
+    const sql = 'select * from employer_signup where employer_mail = ?';
+    a.query(sql,[req.body.employerMail],(err,data)=>{
+        if(err) return res.json({Error:"Login error in server"});
+        if(data.length > 0) {
+            bcrypt.compare(req.body.employerPassword.toString(), data[0].employer_password,(err,response)=>{
+                console.log(response)
+                console.log(data)
+                if(err) return res.json({Error:"password compare error"});
+                if(response) {                    
+            const name = data[0].empoyer_name;
+            const token = jwt.sign({name},"jwt-seceret-key",{expiresIn:'1d'});
+            res.cookie('token',token);
+                    return res.json({status:"success"})                
+                }
+                else{                
+                    return res.json({Error:"password not matched"})
+                }
+            })
+                }else{
+                    return res.json({Error:"no email existed"})
+                }
     })
-});
+    });
+    
+
+
+
+
+
+
+  //employer login  with user verification by cookies
+  const verifyUser=(req,res,next)=>{
+    const token = req.cookies.token;
+    if(!token){
+        return res.json({error:"you are not authenticated"});
+            }else{
+                jwt.verify(token,"jwt-seceret-key",(err,decoded)=>{
+            if(err){
+                return res.json({error:"Token is not ok"});
+            }else{
+                req.name= decoded.name;
+                next();
+            }
+            })
+            }
+          }
+          //get the token and check for authenticated user or not and decode the employer name from the cookei and pass to the employer landing page
+         add.get('/',verifyUser,(req,res)=>{
+            return res.json({status:"success",name:req.name});
+         }) 
+  
+         //employer logout api for the logout button in the employer landing page by deleting the cookiee
+         add.get('/employerLogout',(request,response)=>{
+            response.clearCookie('token');
+            return response.json({status:"success"})
+         })
+
 
 add.post('/createJobs',(request,response)=>{
     console.log(JSON.stringify(request.body));
