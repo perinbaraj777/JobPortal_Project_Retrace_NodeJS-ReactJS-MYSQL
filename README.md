@@ -63,12 +63,11 @@ npm i-D nodemon
 
 
 
-# Create a MySQL database and configure the connection in the server's .env file.
+# Create a MySQL database and configure the connection in the server's.
 
 # Run the development server:
 open vscode and open the project folder:
 cd RetraceJobPortal_BackEnd
-
 npm run dev (to start the server)
 
 # Usage
