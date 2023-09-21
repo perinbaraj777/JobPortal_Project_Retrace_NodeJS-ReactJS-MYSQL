@@ -35,30 +35,31 @@ To set up the JobPortal website locally, follow these steps:
    
 # Install dependencies for the React frontend:
 cd npm install RetraceJobPortal_FrontEnd
-npm start (to view the UI)
-npm install fontawesome                            
-npm i --save @fortawesome/fontawesome-svg-core
-  npm install --save @fortawesome/react-fontawesome @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons
-  npm i --save @fortawesome/free-brands-svg-icons        
- npm --save @fortawesome/free-brands-svg-icons  
- npm i --save @fortawesome/free-regular-svg-icons  
-  npm install  axios                                     
-npm install react-router-dom     
-npm install bootstrap  
+
+npm install fontawesome,                            
+npm i --save @fortawesome/fontawesome-svg-core,
+  npm install --save @fortawesome/react-fontawesome @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons,
+  npm i --save @fortawesome/free-brands-svg-icons ,       
+ npm --save @fortawesome/free-brands-svg-icons  ,
+ npm i --save @fortawesome/free-regular-svg-icons  ,
+  npm install  axios  ,                                   
+npm install react-router-dom,     
+npm install bootstrap , 
+npm start (to view the UI),
 
 # Install dependencies for the Node.js backend:
 cd RetraceJobPortal_BackEnd
-npm install
-npm install mysql        
-npm install body-parser      
-npm install cors   
-npm install express
- npm i cookie-parser
- npm install node mailer
-npm i jsonwebtoken
-npm i bcrypt   
-npm install nodemon 
-npm i-D nodemon 
+npm install,
+npm install mysql ,       
+npm install body-parser,      
+npm install cors,   
+npm install express,
+ npm i cookie-parser,
+ npm install node mailer,
+npm i jsonwebtoken,
+npm i bcrypt ,  
+npm install nodemon ,
+npm i-D nodemon ,
 
 
 
@@ -102,8 +103,8 @@ Check out our Roadmap to see the planned features and enhancements for future re
 
 # Acknowledgments
 We'd like to thank the following contributors and libraries that have been instrumental in building the JobPortal website:
-Icons by FontAwesome
-React - JavaScript library
-Node.js - JavaScript runtime
-Express - Web application framework
-MySQL - Relational database
+Icons by FontAwesome,
+React - JavaScript library,
+Node.js - JavaScript runtime,
+Express - Web application framework,
+MySQL - Relational database,
