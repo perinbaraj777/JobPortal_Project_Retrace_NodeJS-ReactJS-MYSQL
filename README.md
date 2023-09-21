@@ -77,16 +77,16 @@ After installation, open the web application in your browser and:
 # Job Seekers: 
       Sign up, log in, and search for job listings. Apply to jobs and manage your profile.
 # Employers:
-Sign up, log in, and post job openings. Manage job listings and view applicants.
-For more detailed usage instructions, please refer to the User Guide.
+1. Sign up, log in, and post job openings. Manage job listings and view applicants.
+2. *For more detailed usage instructions, please refer to the User Guide.
 
 # Features
-User registration and authentication for both job seekers and employers.
-Job search functionality with filtering and sorting options.
-Job application submission and management for job seekers.
-Job posting and management for employers.
-User profile management with resume uploads for job seekers.
-Admin panel for site administration and moderation.
+1). User registration and authentication for both job seekers and employers.
+2). Job search functionality with filtering and sorting options.
+3). Job application submission and management for job seekers.
+4). Job posting and management for employers.
+5). User profile management with resume uploads for job seekers.
+6). Admin panel for site administration and moderation.
 
 # Database Schema
 The project uses a MySQL database. You can find the database schema and documentation in the Database Schema Guide.
@@ -103,8 +103,8 @@ Check out our Roadmap to see the planned features and enhancements for future re
 
 # Acknowledgments
 We'd like to thank the following contributors and libraries that have been instrumental in building the JobPortal website:
-Icons by FontAwesome,
-React - JavaScript library,
-Node.js - JavaScript runtime,
-Express - Web application framework,
-MySQL - Relational database,
+* Icons by FontAwesome,
+* React - JavaScript library,
+* Node.js - JavaScript runtime,
+* Express - Web application framework,
+* MySQL - Relational database,
