@@ -13,7 +13,7 @@ const bcrypt=require('bcrypt');
 const add = express();
 add.use(cors({
     origin:['http://localhost:3000'],
-    methods:['POST','GET'],
+    methods:['POST','GET','DELETE','PUT'],
     credentials:true
 }));
 
@@ -176,7 +176,8 @@ add.post("/employerLogin",(req,res)=>{
                 if(err) return res.json({Error:"password compare error"});
                 if(response) {                    
             const name = data[0].empoyer_name;
-            const token = jwt.sign({name},"jwt-seceret-key",{expiresIn:'1d'});
+            const id = data[0].employer_id;
+            const token = jwt.sign({name,id},"jwt-seceret-key",{expiresIn:'1d'});
             res.cookie('token',token);
                     return res.json({status:"success"})                
                 }
@@ -207,6 +208,7 @@ add.post("/employerLogin",(req,res)=>{
                 return res.json({error:"Token is not ok"});
             }else{
                 req.name= decoded.name;
+                req.id= decoded.id;
                 next();
             }
             })
@@ -214,7 +216,7 @@ add.post("/employerLogin",(req,res)=>{
           }
           //get the token and check for authenticated user or not and decode the employer name from the cookei and pass to the employer landing page
          add.get('/',verifyUser,(req,res)=>{
-            return res.json({status:"success",name:req.name});
+            return res.json({status:"success",name:req.name,id:req.id});
          }) 
   
          //employer logout api for the logout button in the employer landing page by deleting the cookiee
@@ -261,10 +263,45 @@ add.get('/employer/jobs', (request, response) => {
         console.error('Error executing query: ' + error);
         response.status(500).json({ error: 'Internal Server Error' });
       } else {
+        if(results.length <=  0){
+            response.send({status:"none"})
+        }else{
         response.json(results);
+    }
       }
     });
   });
+
+  //updating a job of an employer  from the list in employerlanding page for the update button
+  add.put("/jobs/update/:jobId",(request,response)=>{
+    let jobId=request.params.jobId;
+    let {jobType,jobTitle,jobDescription,jobLocation}= request.body;
+    let sql='update jobs set job_type= ?, job_title=?, job_description= ?, location=? where job_id= ? ';
+    a.query(sql,[jobType,jobTitle,jobDescription,jobLocation,jobId],(error,result)=>{
+        if(error){
+            console.log(error);
+            response.status(500).json({status:"internal server error"})
+        }else{
+            response.status(200).json({status:"success"})
+        }
+    })
+  })
+  
+  //delete jobs of a employer in employer landing page jobs delete button
+  add.delete("/jobs/delete/:jobId",(request,response)=>{ 
+    const jobId = request.params.jobId;
+    const sql = 'DELETE FROM jobs WHERE job_id = ?';
+    a.query(sql, [jobId], (error, result) => {
+      if (error) {
+        console.error('Error in deleting job:', error);
+        response.status(500).json({ status: 'failed' });
+      } else {
+        response.status(200).json({ status: 'success' });
+      }
+    });
+  });
+  
+  
 
   //api for displaying all jobs in pagination in userLanding page
   add.get('/jobs/userLandingPage',(req,res)=>{

@@ -14,7 +14,8 @@ const Employerfunctions = () => {
 //user authorized or not function with logout in employer landing page
 const [auth,setAuth]=useState(false);
   const [message,setMessage]=useState('');
-  const [name,setName]=useState('');
+  const [name,setName]=useState('');             //loged  in employer name
+const [id,setId]=useState('')           //useState for storing the employerid  and send as a prop to the application form and store in (postedby state)
 
   axios.defaults.withCredentials=true; //from login page
 //to get the employer name  and id decoded from the cookies
@@ -23,6 +24,7 @@ const [auth,setAuth]=useState(false);
       if(res.data.status==="success"){
         setAuth(true);
         setName(res.data.name)
+        setId(res.data.id)
       }else{
         setAuth(false);
         setMessage(res.data.error)
@@ -48,7 +50,15 @@ const [auth,setAuth]=useState(false);
     setShowPostedJobs(true);
   }
 
-  
+  ///handling the back button in joblisting component by call back function
+  const handleJobListingBackButton=()=>{
+    setShowPostedJobs(false);
+  }
+
+  //handling the back button in the jobApplication component  by using the callback function
+  const handleJobApplicationFormBackButton = ()=>{
+    setShowApplicationForm(false);
+  }
   return (
    <div>
     {
@@ -56,7 +66,7 @@ const [auth,setAuth]=useState(false);
 
     <div>          
       {showApplicationForm ? (
-        <JobApplicationForm />
+        <JobApplicationForm id={id} backButton={handleJobApplicationFormBackButton} />  //id prop from the employerFunction component //back button call back function
       ) : (
         <>
          <h1 className="text-center bg-dark text-light">EMPLOYERS MODULE</h1>
@@ -72,12 +82,12 @@ const [auth,setAuth]=useState(false);
       <div>
         
       {showPostedJobs ? (
-        <JobListing />
+        <JobListing id={id} backButton={handleJobListingBackButton} />  //id is a from employer function for listing the loged in employer id =loged in employer id from the cookie
       ) : (
         <>
         <div className="container alert alert-success p-3">
         <h2>view jobs</h2>
-        <button onClick={handleShowJobsClick} className="alert alert-danger">VIEW</button>
+        <button onClick={handleShowJobsClick}  className="alert alert-danger">VIEW</button>
         </div>
        
         </>
@@ -99,30 +109,89 @@ const [auth,setAuth]=useState(false);
   );
 };
 
-const JobListing =()=>{
+const JobListing =({id,backButton})=>{
    
-  const [employerId, setEmployerId] = useState('');
+  const [employerId, setEmployerId] =useState(id) ;
   const [jobs, setJobs] = useState([]);
+  const [showTableHead,setShowTableHead]=useState(false);
 
   const fetchJobs = () => {
     fetch(`http://localhost:8000/jobs?employerId=${employerId}`)
       .then((response) => response.json())
-      .then((data) => setJobs(data))
+      .then((data) =>{        
+        if(data.status==="none"){
+          alert("you haven't posted any jobs")
+        }else{
+          setShowTableHead(true);
+          setJobs(data)
+        }
+       
+      } )
       .catch((error) => console.error('Error fetching data: ' + error));
   };
 
+  
+  
+
+  //update job
+  //this state stores the jobid of  the selected job to be updated
+  const [selectedJobId, setSelectedJobId] = useState(null);
+  //creating a state to store the data of the job need to update with
+const [updateJobData, setUpdateJobData] = useState({
+  jobType: "",
+  jobTitle: "",
+  jobDescription: "",
+  jobLocation: "",
+});
+
+
+  
+  
+  
+
+ // Function for  delete a job from job listing in employer landing page
+ const handleDeleteJob = async (jobId) => {
+  try {
+    // passig  the jobid as params to the backend
+    const response = await axios.delete(`http://localhost:8000/jobs/delete/${jobId}`);
+    if (response.data.status === "success") {
+      alert(`job ${jobId} is successfully  deleted`);
+      // fetchJobs function is called here to refresh the job list after successful deletion
+      fetchJobs();
+    } else {
+      alert(`Failed to delete job with ID ${jobId}`);
+    }
+  } catch (error) {
+    console.error('Error deleting job:', error);
+  }
+};
+
   return (
+    <>
+    {selectedJobId !== null ? (
+      <JobUpdateForm
+        jobId={selectedJobId}  ///jobId is moved to the update form 
+        jobData={updateJobData}
+        onUpdated={() => {
+          setSelectedJobId(null);
+          fetchJobs(); // Refresh job listings
+        }}
+        onCancel={() => {
+          setSelectedJobId(null);
+        }}
+      />
+    ) : (
+      // Render the job list here
+   
+    
     <div className="container text-center alert alert-dark">
       <h1>Job Details</h1>
-      <div >
-        <label>Employer ID:</label>
-        <input
-          type="text"
-          value={employerId}
-          onChange={(e) => setEmployerId(e.target.value)}
-        />
-        <button onClick={fetchJobs}>Fetch Jobs</button>
-      </div>
+     <h3>EMPLOYER ID:   {employerId}</h3> 
+     <div className="p-2 m-2">
+        <button onClick={fetchJobs} className="bg-warning">MY POST'S</button>
+        <button  className="ms-2 bg-danger" onClick={backButton}>Back</button>
+        </div>
+        {showTableHead &&
       <table className="table table-hover container alert alert-primary">
         <thead>
           <tr>
@@ -133,6 +202,7 @@ const JobListing =()=>{
 
             <th  scope="col">Description</th>
             <th  scope="col">Location</th>
+            <th scope="col">Actions</th>
 
           
           </tr>
@@ -147,20 +217,31 @@ const JobListing =()=>{
               <td>{job.job_title}</td>
               <td>{job.job_description}</td>
               <td>{job.location}</td>
-              
-            </tr>
+              <td >
+         <button className="bg-primary" onClick={() =>{setSelectedJobId(job.job_id);
+       setUpdateJobData({jobType: job.job_type,
+      jobTitle: job.job_title,
+      jobDescription: job.job_description,
+      jobLocation: job.location
+    } )}}>Update</button>
+                  <button className="m-1 bg-danger" onClick={() => handleDeleteJob(job.job_id)}>Delete</button>
+                </td>  </tr>
           ))}
-        </tbody>
-      </table>
+        </tbody>        
+      </table>      
+      }
     </div>
+    )}
+    </>
   );
+  
 }
 
 
 
 
 // Job Application Form Component
-const JobApplicationForm = () => {
+const JobApplicationForm = ({id,backButton}) => {
     // creating a state to set weather the job application is successfully submitted or not if true display only the message(successful)
     const [isSubmitted, setIsSubmitted] = useState(false);
 //creating state for storing the form data
@@ -169,7 +250,7 @@ const JobApplicationForm = () => {
         jobTitle:"",
         jobDescription:"",
         jobLocation:"",
-        postedBy:""
+        postedBy:id
     });
 
     //for storint the data to state when value is added to  the input field
@@ -209,7 +290,7 @@ const JobApplicationForm = () => {
     <h1 className="text-center bg-dark text-light">JOB REGISTRATION FORM</h1>
         <table className="table alert alert-secondary container">
             <thead>
-            <tr>  <td>  <label>Employer Id:</label></td><td><input type="number" name="postedBy" value={formData.postedBy} onChange={handleChange}/></td> </tr>
+            <tr>  <td>  <h3>Employer Id:{formData.postedBy}</h3></td><td></td></tr>
 
             <tr><td><label>Job Category:</label></td><td><select name="jobType" value={formData.jobType} onChange={handleChange}>
                 <option>choose</option>
@@ -227,6 +308,7 @@ const JobApplicationForm = () => {
 
       </thead>
       <button type="submit">Submit Application</button>
+      <button onClick= {backButton}>Back</button>
       </table>
      
 
@@ -235,6 +317,83 @@ const JobApplicationForm = () => {
     </>
   );
 };
+
+
+
+//job update form
+const JobUpdateForm = ({ jobId, jobData, onUpdated, onCancel }) => {
+  const [updatedJobData, setUpdatedJobData] = useState(jobData);
+
+  const handleChange = (e) => {
+    setUpdatedJobData({...updatedJobData,[e.target.name]: e.target.value,});
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/jobs/update/${jobId}`,
+        updatedJobData
+      );
+
+      if (response.data.status === "success") {
+        alert(`Job ID ${jobId}  is Successfully updated `);
+        onUpdated(); // Callback to refresh job listings
+      } else {
+        alert(`Failed to update job with ID ${jobId}`);
+      }
+    } catch (error) {
+      console.error('Error updating job:', error);
+    }
+  };
+
+  return (
+    <div className="container alert alert-info">
+      <h2>Update Job Form</h2>
+      <p>please enter the correct data in the corresponding field</p>
+      <form onSubmit={handleSubmit}>
+        <table className="table alert alert-dark container ">
+          <tbody>
+          <tr>
+    <td> <label>Job Category:</label></td>
+    <td> <select name="jobType" value={updatedJobData.jobType} onChange={handleChange} >
+          <option>choose</option>
+          <option>part time</option>
+          <option>full time</option>
+          <option>contract</option>
+          <option>service</option>
+          <option>others</option>
+        </select></td></tr> 
+        
+          <tr>
+        <td>  <label>Job Title:</label></td>
+        <td> <input type="text" name="jobTitle" value={updatedJobData.jobTitle} onChange={handleChange} /></td>
+       </tr> 
+        <tr>
+        <td> <label>Job Description:</label></td>
+        <td> <input type="text" name="jobDescription" value={updatedJobData.jobDescription} onChange={handleChange} /></td>
+        </tr>
+        <tr>
+        <td> <label>Job Location:</label></td>
+        <td>  <input type="text" name="jobLocation" value={updatedJobData.jobLocation} onChange={handleChange} /></td>
+        </tr> 
+        <tr>
+        <td>  <button type="submit" className="bg-primary">Update</button></td>
+        <td><button onClick={onCancel} className="bg-danger">Cancel</button></td></tr> 
+        </tbody>
+        </table>
+      </form>
+    </div>
+  );
+};
+
+
+
+
+
+
+
 
 // Main App Component of the employer landing page
 const EmployerLandingPage = () => {
