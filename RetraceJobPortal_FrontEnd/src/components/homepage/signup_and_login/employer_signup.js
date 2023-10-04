@@ -3,6 +3,9 @@ import {Link} from 'react-router-dom';
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from '../namelogo image.png';
+import './signup_style.css';
+
 export function Employersignup(){
 
     const navigate=useNavigate();
@@ -36,40 +39,30 @@ try{
 
     return(
         <>
-        <h1 className="text-center" >EMPLOYER SIGNUP</h1>
-        <div>
-            <form onSubmit={handleSubmit}>
-            <table className="table container alert alert-info">
-                <tbody>
+                
+        <div className="signupformBody">
+            <div className="signupbackground"></div>
+            <div className="signupcard">
+                <img className="signuplogo" src={logo}></img>
+                <h2>Create Account</h2>
+                <form  className="signupform" onSubmit={handleSubmit}>
                     
-                    <tr>
-       <td className="text-center"> <label for='companyname'>COMPANY NAME:</label></td>
-       <td >  <input id='companyname' name='companyName' onChange={handleChange} value={formData.companyName} type='text'></input></td>
-       </tr>
-       <tr>
-       <td className="text-center"><label for='recruitername'>RECRUITER NAME:</label></td>
-       <td><input type='text' id='recruitername' name='recruiterName' value={formData.recruiterName} onChange={handleChange}></input></td>
-</tr>
-<tr>
-<td className="text-center"><label for='mail'>ENTER MAIL ID:</label></td>
-<td ><input type='text' id='mail' value={formData.employerMail} name='employerMail' onChange={handleChange}></input></td>
-</tr>
-<tr>
-<td className="text-center"><label for='phone'>PHONE:</label></td>
-<td><input type='number' id='phone' name='employerPhone' value={formData.employerPhone} onChange={handleChange}></input></td>
-</tr>
-<tr>
-<td className="text-center"><label for='password'>PASSWORD:</label></td>
-<td><input type='password' id='password' name='employerPassword' value={formData.employerPassword} onChange={handleChange}></input></td>
-</tr>
-</tbody>
-<input type="submit"/>
-</table>
+                 <input  type="text " placeholder="COMPANY NAME" className="signupinput"  name='companyName' onChange={handleChange} value={formData.companyName} />
+                    <input type="text " placeholder="RECRUITER NAME" className="signupinput" name='recruiterName' value={formData.recruiterName} onChange={handleChange}/>
+                    <input type="text " placeholder=" MAIL ID" className="signupinput" name='employerMail' onChange={handleChange}/>
+                    <input type="text " placeholder="PHONE" className="signupinput"  name='employerPhone' value={formData.employerPhone} onChange={handleChange}/>
+                    <input type="text " placeholder="PASSWORD" className="signupinput"  name='employerPassword' value={formData.employerPassword} onChange={handleChange}/>
+                    <button type="submit" className="signupbutton">Sign Up</button>
+                </form>
+                <footer className="signupfooter">
+                    Existing user
+                    <Link to="/employer_login"><p className="text-center">Login Here</p></Link>
 
-</form>
-<div className=" alert alert-primary container">
-            <p className="text-center">Already have an account</p> <Link to="/employer_login"><h4 className="text-center">LOGIN</h4></Link>
-        </div>
+                </footer>
+            </div>
+           
+            
+             
         </div>
         </>
     )

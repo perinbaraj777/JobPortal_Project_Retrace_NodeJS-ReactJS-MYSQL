@@ -1,0 +1,16 @@
+.nav{
+    display: flex;
+    gap: 10px;
+}
+@keyframes in-keyframes{
+    0% {opacity: 0; translate: 0 100%;}
+    100% {opacity: 1; translate:0 0;}
+}
+.animate-in{
+    animation: in-keyframes 0.5s both;
+}
+.navlogo{
+    margin-right: 800px;
+    margin-left: 30px;
+    width: 150px;
+}

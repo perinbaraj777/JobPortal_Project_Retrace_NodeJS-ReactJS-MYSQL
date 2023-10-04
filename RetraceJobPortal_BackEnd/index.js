@@ -346,9 +346,56 @@ a.query(countQuery,(countError,countResult)=>{
   })
   
 
+
+  //admin page api's
+  //get all users details
+
+  add.get('/admin/allUsers',(request,response)=>{
+    a.query('select * from user_signup',(error,result)=>{
+        if(error){
+            console.log(error);
+            response.status(500).json({"Internal server Error":error})
+        }
+        else{
+            response.status(200).json(result);
+        }
+
+    });
+
+  })
+
+  //search users
+  add.get('/search/users',(request,response)=>{
+    let searchItem = request.query.searchItem;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             //array(22).fill method is used to fill the searchItem value to the all coloumns and compre and retrive the data which is matched                                               
+    a.query('select * from user_signup where user_id like ? or user_type like ? or first_name like ? or last_name like ? or age like ? or gender like ?  or dob like ? or city like ? or district like ? or state like ? or nationality like ? or mail_id like ? or contact_number like ? or qualification like ? or user_password like ? or status=? or effective_from like ? or effective_to like ? or created_on like ? or created_by like ? or modified_by like ? or modified_on like ?',Array(22).fill( '%' + searchItem + '%'),(error,result)=>{
+        if(error){
+            console.log(error);
+            response.status(500).json({"Internal server error":error})
+        }else{
+            response.status(200).json(result)
+        }
+    })
+  })
+
+add.delete('/admin/removeUser/:userId',(request,response)=>{
+    let userId=request.params.userId;
+    a.query('delete from user_signup where user_id= ? ',[userId],(error,result)=>{
+        if(error){
+            console.log(error);
+            response.status(500).json({"Internal server error:":error})
+        }else{
+            response.status(200).json({status:"success" , message:"data deleted successfully"})
+        }
+    })
+})
+
 add.listen(8000,()=>{
     
     console.log("server running in 8000 port"); 
 })
+
+
+
 
 

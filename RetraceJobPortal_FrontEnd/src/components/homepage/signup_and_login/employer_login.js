@@ -3,6 +3,11 @@ import {Link} from 'react-router-dom';
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import welcomeloginimage from './images/login-welcome-image.jpg'
+import './login_style.css';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faUserCircle} from '@fortawesome/free-regular-svg-icons';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
 export  function Employerlogin(){
 
     //declaring the navigate
@@ -41,26 +46,35 @@ export  function Employerlogin(){
  }
     return(
         <>
-        <h1 className="text-center">EMPLOYER LOGIN</h1>
-        <div className="container alert alert-success p-5 text-center">
-            <form onSubmit={handleSubmit}>
-                <table>
-                    <tbody>
-                        <tr>
-            <td><label htmlFor="mail">E-MAIL:</label></td>
-            <td><input type="email" id="mail" name="employerMail" value={formData.employerMail} onChange={handleChange}/></td></tr>
-            <tr>
-            <td><label htmlFor="password">PASSWORD:</label></td>
-            <td> <input type="text" id="password" name="employerPassword" value={formData.employerPassword} onChange={handleChange}></input></td>
-            </tr>
+              <html>
+            <body className="employerloginbody">
+
+           
+        <div className="login">
+            <div className="avatar">
+                      <img src={welcomeloginimage}/>
+            </div>
+            <h2>Login</h2>
+            <h3>Welcome Back </h3>
             
-            </tbody>
-            </table>
-            <button type="submit" className="alert alert-danger p-1" >LOGIN</button>
+            <form onSubmit={handleSubmit} className="login-form">
+                <div className="textbox">
+                <input type="text" className="logininput" placeholder="Usermail" name="employerMail" value={formData.employerMail} onChange={handleChange}/>
+                <span className="material-symbols-outlined"> <FontAwesomeIcon icon={faUserCircle} /></span>
+                </div>
+                <div className="textbox">
+                <input type="password" className="logininput" placeholder="Password" name="employerPassword" value={formData.employerPassword} onChange={handleChange}></input>            
+                <span className="material-symbols-outlined"><FontAwesomeIcon icon={faLock } /></span>
+
+                </div>
+                <button type="submit" className="loginbutton">Login</button>
+                <Link to='/employer_signup'> <p>Dont have an account!</p></Link>    
+                <p>Forgot password?</p>
             </form>
-            <h5>Let's create your account</h5>
-            <Link to='/employer_signup'><h4 className="text-dark">create an account</h4></Link>
-        </div>
+            </div>
+            </body>
+
+</html>
         </>
     )
 }

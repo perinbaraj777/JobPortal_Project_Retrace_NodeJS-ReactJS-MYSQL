@@ -1,9 +1,14 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import { BubblyLink } from "react-bubbly-transitions";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import welcomeloginimage from './images/login-welcome-image.jpg'
+import './login_style.css';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faUserCircle} from '@fortawesome/free-regular-svg-icons';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
 export function Userlogin(){
    const[formData,setFormData]=useState({
     mailId:'',
@@ -36,32 +41,36 @@ export function Userlogin(){
 };
     return(
         <>
-       
-        <div className="bg-secondary p-5">
-        <div className="alert alert-danger text-center container">
-        <h1>USER LOGIN</h1>
-        <form onSubmit={handleSubmit}>
-        <table>
-            <tbody>
-            <tr>
-               
-       <td> <label htmlFor='mail'>ENTER MAIL ADDRESS:</label></td>
-       <td> <input type="email" id='mail' name="mailId" value={formData.mailId} onChange={handleChange} ></input><br/></td>
-       <td></td>
-        </tr>
-        <tr>        
-        <td> <label htmlFor="password">ENTER THE PASSWORD:</label></td>
-        <td> <input type="text"  id="password" name='userPassword' value={formData.userPassword} onChange={handleChange}></input></td>
-        </tr>
-        <tr><td><input type='submit'></input></td></tr>
-        </tbody>
-        </table>
-        </form>
-        <h4>Dont have an account</h4>
-        <Link to="/user_signup"><h4 className="text-dark">create an new account</h4></Link>
-       
-        </div>
-        </div>
+
+        <html>
+            <body className="employerloginbody">
+
+           
+        <div className="login">
+            <div className="avatar">
+                      <img src={welcomeloginimage}/>
+            </div>
+            <h2>Login</h2>
+            <h3>Welcome Back User</h3>
+            <form onSubmit={handleSubmit} className="login-form">
+                <div className="textbox">
+                <input type="text" placeholder="Usermail" name="mailId" value={formData.mailId} onChange={handleChange}/>
+                <span className="material-symbols-outlined"> <FontAwesomeIcon icon={faUserCircle} /></span>
+                </div>
+                <div className="textbox">
+                <input type="password" placeholder="Password" name="userPassword" value={formData.userPassword} onChange={handleChange}></input>            
+                <span className="material-symbols-outlined"><FontAwesomeIcon icon={faLock } /></span>
+
+                </div>
+                <button type="submit" className="loginbutton">Login</button>
+                <BubblyLink to='/user_signup' > <p className="signuproute">Dont have an account!</p></BubblyLink>
+    
+                <p className="signuproute">Forgot password?</p>
+            </form>
+            </div>
+            </body>
+
+</html>
         
         </>
     )

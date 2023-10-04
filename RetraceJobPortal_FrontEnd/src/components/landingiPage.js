@@ -24,6 +24,7 @@ export function  LandingPage(){
       useEffect(() => {
         fetch(`http://localhost:8000/jobs/userLandingPage?page=${currentPage}`)
           .then((response) => response.json())
+          
           .then((data) => {
             setJobs(data.result);
             setTotalPages(data.totalPages);

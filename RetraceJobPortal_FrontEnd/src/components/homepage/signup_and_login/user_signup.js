@@ -2,7 +2,10 @@ import React from "react";
 import {useState} from 'react';
 import axios from 'axios';
 import {Link} from "react-router-dom";
-import {useNavigate} from "react-router-dom"
+import { BubblyLink } from "react-bubbly-transitions";
+import {useNavigate} from "react-router-dom";
+import logo from '../namelogo image.png';
+import './signup_style.css';
 
 // export function Usersignup(){
          
@@ -53,70 +56,48 @@ const Usersignup = () => {
 
   return (
     <div>
-         <section name="userSignupForm">
-         <div className='container alert alert-info' id="usersignup">
-         <h1 className='text-center'>USER REGISTRATION</h1>
-      <form onSubmit={handleSubmit}>
-      <table>
-                        <tr><td>
-         <label for="userType">USER TYPE:</label></td>
-       <td>  <select name='userType' value={formData.userType} onChange={handleChange}>
-                <option value="choose">choose</option> 
+       
+      <div className="signupformBody">
+            <div className="signupbackground"></div>
+            <div className="signupcard">
+                <img className="signuplogo" src={logo}></img>
+                <h2>Create Account</h2>
+                <form  className="signupform" onSubmit={handleSubmit}>
+                <input  type="text " placeholder="User Type:"   disabled className="signupselect"  name='companyName' onChange={handleChange} value={formData.companyName} />
+                <select name='userType' value={formData.userType} onChange={handleChange}  className="signupinput">
+                <option value="">choose</option> 
                  <option value="student">student</option>    
                  <option value="graduate">graduate</option> 
                 <option value="others">others</option>           
                 
-         </select></td></tr>
-         <tr>
-     <td><label for="firstname">FIRST NAME:</label></td>
-       <td><input type="text" id="firstname" name="firstName" value={formData.firstName} onChange={handleChange}/></td></tr> 
+         </select>
+                    
+                 <input  type="text " placeholder="FIRST NAME" className="signupinput"   name="firstName" value={formData.firstName} onChange={handleChange} />
+                    <input type="text " placeholder="LAST NAME" className="signupinput" name="lastName" value={formData.lastNameName} onChange={handleChange}/>
+                    <input type="text " placeholder=" AGE" className="signupinput" name="age" value={formData.age} onChange={handleChange}/>
+                    <input type="text " placeholder="GENDER" className="signupinput"  name="gender" value={formData.gender} onChange={handleChange}/>
+                    <input type="date " placeholder="DATE OF BIRTH" className="signupinput"  name="dob" value={formData.dob} onChange={handleChange}/>
+                    <input type="text " placeholder="CITY" className="signupinput"  name="city" value={formData.city} onChange={handleChange}/>
+                    <input type="text " placeholder="DISTRICT" className="signupinput"  name="district" value={formData.district} onChange={handleChange}/>
+                    <input type="text " placeholder="STATE" className="signupinput" name="state" value={formData.state} onChange={handleChange}/>
+                    <input type="text " placeholder="NATIONALITY" className="signupinput" name="nationality" value={formData.nationality} onChange={handleChange}/>
+                    <input type="email " placeholder="EMAIL ID" className="signupinput"  name="mailId" onChange={handleChange} value={formData.mailId}/>
+                    <input type="number " placeholder=" MOBILE NUMBER" className="signupinput"  name="contactNumber" value={formData.contactNumber} onChange={handleChange}/>
+                    <input type="text " placeholder="QUALIFICATION" className="signupinput" name="qualification" value={formData.qualification} onChange={handleChange}/>
+                    <input type="text " placeholder="PASSWORD" className="signupinput" name="userPassword" value={formData.userPassword} onChange={handleChange}/>
+                    <button type="submit" className="signupbutton">Register</button>
+                </form>
+                <footer className="signupfooter">
+                    Existing user
+                    <BubblyLink to="/user_login"><p className="text-center">Login Here</p></BubblyLink><br/>
+                    <BubblyLink to="/"><p className="text-center">cancel</p></BubblyLink>
 
-       <tr>
-     <td><label for="lastname">LAST NAME:</label></td>
-       <td><input type="text" id="lastname" name="lastName" value={formData.lastNameName} onChange={handleChange}/></td></tr> 
-
-       <tr>
-     <td><label for="age">AGE:</label></td>
-       <td><input type="number" id="age" name="age" value={formData.age} onChange={handleChange}/></td></tr> 
-
-       <tr>
-     <td><label for="gender">GENDER:</label></td>
-       <td><input type="text" id="gender" name="gender" value={formData.gender} onChange={handleChange}/></td></tr> 
-
-       <tr><td><label for="dob">DATE OF BIRTH:</label></td>
-         <td> <input type="date" id="dob" name="dob" value={formData.dob} onChange={handleChange}/></td></tr> 
-
-         <tr>
-     <td><label for="city">CITY:</label></td>
-       <td><input type="text" id="city" name="city" value={formData.city} onChange={handleChange}/></td></tr> 
-       <tr>
-     <td><label for="district">DISTRICT:</label></td>
-       <td><input type="text" id="district" name="district" value={formData.district} onChange={handleChange}/></td></tr> 
-       <tr>
-     <td><label for="state">STATE:</label></td>
-       <td><input type="text" id="state" name="state" value={formData.state} onChange={handleChange}/></td></tr> 
-       <tr>
-     <td><label for="nationality">NATIONALITY:</label></td>
-       <td><input type="text" id="nationality" name="nationality" value={formData.nationality} onChange={handleChange}/></td></tr> 
-       <tr><td><label for="mailId">EMAIL ID:</label></td>
-         <td> <input type="email" id="mailId" name="mailId" onChange={handleChange} value={formData.mailId}/></td></tr> 
-         <tr>
-     <td><label for="contactNumber">MOBILE NUMBER:</label></td>
-       <td><input type="number" id="contactNumber" name="contactNumber" value={formData.contactNumber} onChange={handleChange}/></td></tr> 
-       <tr>
-     <td><label for="qualification">QUALIFICATION:</label></td>
-       <td><input type="text" id="qualification" name="qualification" value={formData.qualification} onChange={handleChange}/></td></tr> 
-       <tr>
-     <td><label for="userPassword">PASSWORD:</label></td>
-       <td><input type="password" id="userPassword" name="userPassword" value={formData.userPassword} onChange={handleChange}/></td></tr> 
-
-       <button type="submit" className="text-center">Register</button>
-</table>
-      
-      </form>
-      <Link to="/user_login"><h4 className="text-dark text-center">Already have an account?login</h4> </Link>
-      </div>
-      </section>
+                </footer>
+            </div>
+           
+            
+             
+        </div>
     </div>
   );
 };

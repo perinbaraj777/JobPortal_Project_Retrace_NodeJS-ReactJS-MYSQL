@@ -1,0 +1,22 @@
+.admin_nav{
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 120px;
+    height: 100%;
+    background: #1d1e22;
+    color: #f9f9f9;
+    padding: 20px;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.admin_main{
+    margin-left: 120px;
+    padding: 20px;
+}
