@@ -2,7 +2,10 @@ use retrace;
 show tables;
 select * from  user_signup;-- 
 truncate table ds;
-drop table user_signup;-- 
+drop table user_si;-- 
+desc employer_signup ;
+
+
 
 create table user_signup(user_id bigint(20)  primary key auto_increment,
 user_type varchar(30),
@@ -27,6 +30,8 @@ effective_from date ,
 effective_to date
 ) auto_increment=10000;
 
+
+alter table employer_signup modify  column employer_mail varchar(50);
 create table employer_signup(employer_id bigint(20) primary key auto_increment not null,
 empoyer_name varchar(20) not null,
 employer_mail varchar(20) not null,
@@ -60,7 +65,7 @@ foreign key (posted_by) references employer_signup (employer_id)
  )auto_increment=30000;
 
 select * from jobs;-- 
- 
+
  create table applications(application_id bigint key  auto_increment ,
  applicant_id bigint ,
  applicant_mail  varchar(40)  ,
@@ -77,5 +82,17 @@ modified_on datetime ,
 effective_from date,
 effective_to date)auto_increment=40000;
  select * from applications;
- drop table applications;-- 
+ drop table applicats;-- 
  
+ SELECT constraint_name, column_name, referenced_table_name, referenced_column_name FROM information_schema.key_column_usage WHERE table_name = 'applications' AND column_name = 'applicant_id';
+
+ 
+ ALTER TABLE applications DROP FOREIGN KEY applications_ibfk_1;
+ 
+ alter table applications
+ add constraint applications_ibfk_1
+ foreign key (applicant_id) references user_signup (user_id) on delete cascade;
+ 
+ select constraint_name, column_name, referenced_table_name, referenced_column_name from information_schema.key_column_usage where table_name='applications' and column_name='application_job_id';
+alter table applications drop foreign key applications_ibfk_2;
+alter table applications add constraint applications_ibfk_2 foreign key(application_job_id) references jobs (job_id);
