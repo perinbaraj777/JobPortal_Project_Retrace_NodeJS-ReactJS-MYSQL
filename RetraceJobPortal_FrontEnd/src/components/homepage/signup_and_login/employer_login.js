@@ -68,7 +68,8 @@ export  function Employerlogin(){
 
                 </div>
                 <button type="submit" className="loginbutton">Login</button>
-                <Link to='/employer_signup'> <p>Dont have an account!</p></Link>    
+                <Link to='/employer_signup'> <p>Dont have an account!</p></Link>   
+                <Link to="/"><p className="text-center">cancel</p></Link> 
                 <p>Forgot password?</p>
             </form>
             </div>

@@ -377,10 +377,54 @@ a.query(countQuery,(countError,countResult)=>{
         }
     })
   })
-
+//remove user button  api in admin user module
 add.delete('/admin/removeUser/:userId',(request,response)=>{
     let userId=request.params.userId;
     a.query('delete from user_signup where user_id= ? ',[userId],(error,result)=>{
+        if(error){
+            console.log(error);
+            response.status(500).json({"Internal server error:":error})
+        }else{
+            response.status(200).json({status:"success" , message:"data deleted successfully"})
+        }
+    })
+})
+
+//get all jobs details
+
+add.get('/admin/allJobs',(request,response)=>{
+    a.query('select * from jobs',(error,result)=>{
+        if(error){
+            console.log(error);
+            response.status(500).json({"Internal server Error":error})
+        }
+        else{
+            response.status(200).json(result);
+        }
+
+    });
+
+  })
+
+ //search jobs
+ add.get('/admin/search/jobs',(request,response)=>{
+    let searchItem = request.query.searchItem;
+   
+    a.query('select * from jobs where job_id like ? or job_type like ? or job_title like ? or job_description like ? or location like ? or posted_by like ?  or status=? or created_by like ? or  created_on like ? or  modified_by like ? or modified_on like ? or effective_from like ? or effective_to like ?  ',Array(13).fill( '%' + searchItem + '%'),(error,result)=>{
+        if(error){
+            console.log(error);
+            response.status(500).json({"Internal server error":error})
+        }else{
+            response.status(200).json(result)
+        }
+    })
+  })
+
+
+  //remove job button  api in admin job module
+add.delete('/admin/removeJob/:jobId',(request,response)=>{
+    let jobId=request.params.jobId;
+    a.query('delete from jobs where job_id= ? ',[jobId],(error,result)=>{
         if(error){
             console.log(error);
             response.status(500).json({"Internal server error:":error})

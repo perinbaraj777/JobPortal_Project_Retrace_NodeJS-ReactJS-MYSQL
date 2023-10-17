@@ -57,7 +57,7 @@ try{
                 <footer className="signupfooter">
                     Existing user
                     <Link to="/employer_login"><p className="text-center">Login Here</p></Link>
-
+                    <Link to="/"><p className="text-center">cancel</p></Link>
                 </footer>
             </div>
            

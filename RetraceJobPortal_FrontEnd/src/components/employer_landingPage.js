@@ -279,6 +279,7 @@ const JobApplicationForm = ({id,backButton}) => {
       <div className=" alert alert-success container ">
         <p>Your application has been successfully submitted!</p>
         <p>Thank you for applying </p>
+        <button onClick={()=>{setIsSubmitted(false)}}>OK</button>
       </div>
     );
   }

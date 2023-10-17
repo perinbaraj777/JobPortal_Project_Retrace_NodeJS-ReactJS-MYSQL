@@ -1,6 +1,9 @@
+*{
+    box-sizing:border-box;
+}
 .nav{
     display: flex;
-    gap: 10px;
+  
 }
 @keyframes in-keyframes{
     0% {opacity: 0; translate: 0 100%;}
@@ -14,3 +17,95 @@
     margin-left: 30px;
     width: 150px;
 }
+
+.homepagebody{
+    width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+}
+/* styling  for the home page nav items when routing is done */
+.active {
+    color: #f60707; 
+    /* font-weight:inherit;  */
+    text-transform:uppercase;
+   text-decoration: underline 3px solid #f207f6;   
+    
+  }
+  
+  /* company module styling  accordins */
+  .accordinSection{
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
+    margin-top: 50px;
+    margin-left: 200px;
+    
+
+  }
+  article{
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    width: 64px;
+    height: 500px;
+    border-radius: 36px;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0.9;
+    transition: 0.5s;
+  }
+  .accordinh2{
+    margin: 0;
+  }
+  article.active{
+    width: 400px;
+    opacity: 1;
+  }
+  article .accordinh2{
+    font-size: 24px;
+    font-weight: 400;
+    color: rgb(255 255 255 / 96%);
+  }
+  /* d */
+  article .material-symbols-outlined{
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    background-color: rgb(255 255 255 / 80%);
+    border-radius: 50%;
+    font-size: 28px;
+
+  }
+
+  article .accordinImage{
+    position: absolute;
+    z-index: 0;
+    top: 50%;
+    left: 50% ;
+    translate: -50% -50%;
+    height: 150%;
+
+  }
+  article .content{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 400px;
+    z-index: 1;
+    opacity: 0;
+    visibility: hidden;
+    padding: 100px 0 20px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background:linear-gradient(to bottom,rgb(0 0 0 / 0%),
+    rgb(0 0 0 / 80%));
+    transition: 0.25s;
+  }
+  article.active .content{
+    opacity: 1;
+    visibility: visible;
+  }

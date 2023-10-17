@@ -64,8 +64,9 @@ export function Userlogin(){
                 </div>
                 <button type="submit" className="loginbutton">Login</button>
                 <BubblyLink to='/user_signup' > <p className="signuproute">Dont have an account!</p></BubblyLink>
-    
-                <p className="signuproute">Forgot password?</p>
+                <BubblyLink to="/"><p className="signuproute">cancel</p></BubblyLink>
+
+                
             </form>
             </div>
             </body>

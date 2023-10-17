@@ -64,7 +64,7 @@ const handleSearch = () => {
                 setAdminAllUsers(response.data);
                 console.log(response.data);
                 alert(`deleting user ${userId} `);
-                //to refresh the searched user list deletion
+                //to refresh the searched user list  after deletion
            handleSearch();
               });
         }else{
